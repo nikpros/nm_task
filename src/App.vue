@@ -1,27 +1,41 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-  </div>
+    <v-app>
+        
+        <ListParticipants/>
+
+        <v-content>
+            
+            <v-container
+                fluid
+                class="grey lighten-4 fill-height align-start"
+                
+            >
+                <v-row
+
+                >
+                <v-col cols="auto">
+                    <CardMeeting/>
+                </v-col>
+                </v-row>
+            </v-container>
+        </v-content>
+    </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+
+import ListParticipants from './components/ListParticipants';
+import CardMeeting from './components/CardMeeting';
 
 export default {
-  name: "app",
-  components: {
-    HelloWorld
-  }
+    data: () => ({
+    }),
+    components: {
+        ListParticipants,
+        CardMeeting
+    }
 };
 </script>
 
-<style lang="stylus">
-#app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
-  margin-top 60px
+<style>
 </style>
