@@ -28,12 +28,10 @@
             <v-list
                 subheader
                 class="grey lighten-4"
-                
             >
                 <v-container>
                     <v-row
                         align="center"
-                        
                     >
                         <v-col cols="6">
                             <v-subheader>

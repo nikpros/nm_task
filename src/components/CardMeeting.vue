@@ -2,6 +2,7 @@
     <v-card
     class="mx-auto"
     max-width="344"
+    min-width="270"
     >
         <v-card-title>
             Top western road trips
