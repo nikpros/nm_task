@@ -1,29 +1,45 @@
-# nm_task
+# Neuromap Meetings
 
-## Project setup
+Приложение для планирования встреч. [Описание.](https://github.com/ivryb/test/blob/master/meetings-light.md)
+
+## Внимание!!!
+
+Касаемо пункта по real-time синхронизации между вкладками браузера через `localStorage`: к сожалению `localStorage` не рективный `state`. В следствии чего не возможно добиться real-time без принудительного обновления вкладки, после перехода в новое окно с приложением :(
+
+P.S. хотя и предпринимались попытки по использованию `setInterval` в качестве инструмента интервальной проверки `localStorage` на факт наличия новых данных относительно `$store` приложения.
+
+## Валидация
+
+Согласно требованиям изложенным в [описании](https://github.com/ivryb/test/blob/master/meetings-light.md) валидация имеет достаточно формальный характер. В приложении обрабатываются крайние случаи, но в целом она сделана в целях предостережения пользователя от грубых ошибок и сугубо личной практики использования модуля `Vuelidate`.
+
+## Инструкция по развертыванию
+
+Приложение разрабатывалось и тестировалось в браузере Google Chrome v79.0.3945.88.
+
+Установка всех зависимостей проекта:
 ```
 npm install
 ```
+Сборка и hot-reloads для режима `development` (**просмотра результатов**):
 
-### Compiles and hot-reloads for development
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+Сборка и минификация для режима `production`:
 ```
 npm run build
 ```
 
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
+Прогон кода через пресеты ESLint:
 ```
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Использованные инструменты
+
++ Webpack
++ Vue
++ Vuex
++ Vuelidate
++ ESLint
