@@ -41,5 +41,8 @@ npm run lint
 + Webpack
 + Vue
 + Vuex
++ Vuetify
 + Vuelidate
 + ESLint
+
+### Затраченные человеко-часов: 8
