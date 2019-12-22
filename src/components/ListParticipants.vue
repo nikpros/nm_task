@@ -1,76 +1,66 @@
 <template>
     <div>
-        <v-app-bar
-            app
-            clipped-left
-            color="blue accent-4"
-            dark
-        >
-            <v-app-bar-nav-icon @click="drawer = !drawer" />
-            <span class="title ml-3 mr-5">Neuromap&nbsp;<span class="font-weight-light">Meetings</span></span>
-            <v-text-field
-                solo-inverted
-                flat
-                hide-details
-                label="Search"
-                prepend-inner-icon="search"
-            />
-
-            <v-spacer />
-        </v-app-bar>
-
         <v-navigation-drawer
             v-model="drawer"
             app
             clipped
             color="grey lighten-4"
-        >
+            width="320px">
             <v-list
                 subheader
-                class="grey lighten-4"
-            >
+                class="grey lighten-4">
                 <v-container>
-                    <v-row
-                        align="center"
-                    >
+                    <v-row align="center">
                         <v-col cols="6">
                             <v-subheader>
                                 PARTICAPANTS
                             </v-subheader>
                         </v-col>
-                        <v-col
-                        cols="6"
-                        class="text-right"
-                        >
+                        <v-col cols="6" class="text-right">
                             <v-btn
                             fab
-                            @click="selectUser"
+                            @click="addUserTrig = !addUserTrig"
                             small
                             dark
-                            color="blue accent-4"
-                            >
-                                <v-icon color="white">add</v-icon>
+                            :color="addUserTrig ? 'error' : 'blue accent-4'">
+                                <v-icon color='white' v-text="addUserTrig ? 'mdi-cancel' : 'add'"></v-icon>
                             </v-btn>
                         </v-col>
                     </v-row>
                 </v-container>
-                <v-list-item
-                v-for="(item, i) in items"
-                :key="i"
-                @click="selectUser"
-                >
-                    <v-list-item-avatar>
-                        <v-img :src="item.avatar"></v-img>
-                    </v-list-item-avatar>
-            
-                    <v-list-item-content>
-                        <v-list-item-title> {{ item.name }} {{ item.surname }}</v-list-item-title>
-                    </v-list-item-content>
-            
-                    <v-list-item-icon>
-                        <v-icon :color="item.active ? 'blue accent-4' : 'grey'">mdi-handshake</v-icon>
-                    </v-list-item-icon>
-                </v-list-item>
+                <template v-if="addUserTrig">
+                    <v-list-item>
+                        <v-list-item-content>
+                            <v-row>
+                                <v-col cols="12" md="6">
+                                    <v-text-field
+                                        label="Name*"
+                                        v-model="name">
+                                    </v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <v-text-field
+                                        label="Surname*"
+                                        v-model="surname">
+                                    </v-text-field>
+                                </v-col>
+                                <v-col class="text-center">
+                                    <v-btn
+                                    color="blue accent-4"
+                                    class="white--text"
+                                    :disabled="validateUser || !name || !surname ? true : false"
+                                    @click="addUser">DONE
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-list-item-content>
+                    </v-list-item>
+                </template>
+                
+                <Participant
+                    v-for="(item, index) in $store.getters.allParticipants"
+                    :key="index"
+                    :user="item"/>
             </v-list>
         </v-navigation-drawer>
     </div>
@@ -78,29 +68,43 @@
 
 <script>
 
+import Participant from './Participant.vue'
+
+
+
 export default {
     data: () => ({
-        drawer: null,
-        items: [
-            {
-                avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                name: 'Ivan',
-                surname: 'Ivanov',
-                active: true
-            },
-            {
-                avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-                name: 'Nikolay',
-                surname: 'Prosvirnin'
-            }
-        ],
+        drawer: false,
+        addUserTrig: false,
+        errorMessage: '',
+        name: '',
+        surname: ''
     }),
-    methods: {
-        selectUser() {
+    components: {
+        Participant
+    },
+    computed: {
+        validateUser() {
+            let coinsidence = false,
+                name = this.name.trim(),
+                surname = this.surname.trim();
 
+            this.$store.getters.allParticipants.forEach(function(item) {
+                if (item.name === `${name} ${surname}`) {
+                    coinsidence = true
+                    
+                    return false
+                }
+            })
+            return coinsidence
+        }
+    },
+    methods: {
+        addUser() {
+            this.$store.commit('addNewParticipants', `${this.name.trim()} ${this.surname.trim()}`)
         }
     }
-};
+}
 </script>
 
 <style lang="stylus" scoped>

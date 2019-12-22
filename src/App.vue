@@ -1,123 +1,78 @@
 <template>
     <v-app>
-        
-        <ListParticipants/>
-
+        <v-app-bar
+            app
+            clipped-left
+            color="blue accent-4"
+            dark>
+            <v-app-bar-nav-icon @click.stop="$refs.drawer.drawer = !$refs.drawer.drawer"/>
+            <span class="title ml-3 mr-5">Neuromap&nbsp;<span class="font-weight-light">Meetings</span></span>
+            <v-text-field
+                v-model="search"
+                solo-inverted
+                flat
+                hide-details
+                label="Search"
+                prepend-inner-icon="search"/>
+            <v-spacer/>
+            <v-btn
+                absolute
+                dark
+                fab
+                bottom
+                right
+                color="pink"
+                @click.stop="$refs.dialog.dialog = !$refs.dialog.dialog">
+                <v-icon>mdi-plus</v-icon>
+            </v-btn>
+        </v-app-bar>
+        <ListParticipants ref="drawer"/>
         <v-content>
-            
             <v-container
                 fluid
-                class="grey lighten-4 fill-height align-start"
+                class="grey lighten-4 fill-height align-start mt-2"
                 
             >
                 <v-row>
-                    <v-col cols="auto">
-                        <CardMeeting/>
-                    </v-col>
-                    <!-- Button ADD new Meeting -->
-                    <v-col class="d-flex align-center">
-                        <v-btn
-                            fab
-                            @click.stop="modalMeeting.dialog = true"
-                            large
-                            dark
-                            color="blue accent-4"
-                            >
-                                <v-icon color="white">add</v-icon>
-                        </v-btn>
+                    <v-col
+                    cols="12" sm="6" md="4" lg="3"
+                    v-for="(item, index) in resultOfSearch"
+                    :key="index">
+                        <CardMeeting :meeting="item"/>
                     </v-col>
                 </v-row>
             </v-container>
         </v-content>
-
-        <v-dialog
-            v-model="dialog"
-            width="500">
-            <v-card>
-                <v-card-title>
-                    <span class="headline">Add meeting</span>
-                </v-card-title>
-                <v-card-text>
-                <v-container>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-text-field label="Title" required></v-text-field>
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field
-                                label="Start time"
-                                value="12:30:00"
-                                type="time">
-                            </v-text-field>
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field
-                                label="Finish time"
-                                value="13:30:00"
-                                type="time">
-                            </v-text-field>
-                        </v-col>
-                        <v-col cols="6">
-                            <v-select
-                                :items="items"
-                                label="Facilitator"
-                            ></v-select>
-                        </v-col>
-                        <v-col cols="6">
-                            <v-select
-                                :items="items"
-                                label="Secretary"
-                            ></v-select>
-                        </v-col>
-                        <v-col cols="12">
-                            <v-autocomplete
-                            :items="items"
-                            label="Particapants"
-                            multiple
-                            ></v-autocomplete>
-                        </v-col>
-                    </v-row>
-                </v-container>
-                </v-card-text>
-                <v-card-actions class="pa-5">
-                    <v-spacer></v-spacer>
-                    <v-btn color="success" dark>Save</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-        
+        <FormAddMeeting ref="dialog"/>
     </v-app>
 </template>
 
 <script>
 
-import ListParticipants from './components/ListParticipants';
-import CardMeeting from './components/CardMeeting';
-import { required, minLength, between } from 'vuelidate/lib/validators'
+import ListParticipants from './components/ListParticipants'
+import CardMeeting from './components/CardMeeting'
+import FormAddMeeting from './components/FormAddMeeting'
 
 export default {
     data: () => ({
-        items: ['Ivan Ivanov', 'Nikolay Prosvirnin'],
-        modalMeeting: {
-            dialog: false,
-            title: ''
-        }
+        search: ''
     }),
+    computed: {
+        resultOfSearch() {
+            let relevantMeetings = this.$store.getters.allMeetings.filter(meeting => {
+                if (this.search && meeting.title.match(new RegExp(`${this.search}`, 'i'))) return true
+                else if (!this.search) return true
+                else return false
+            })
+
+            return relevantMeetings
+        }
+    },
     components: {
         ListParticipants,
-        CardMeeting
+        CardMeeting,
+        FormAddMeeting
     },
-    methods: {
-        addMeeting() {
-            //
-        }
-    },
-    validations: {
-        title: {
-            required,
-            minLength: minLength(4)
-        }
-    }
 };
 </script>
 
